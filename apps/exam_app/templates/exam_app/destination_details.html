@@ -6,41 +6,55 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{item.name}}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'userapp/css/style.css' %}" media="screen" title="notitle" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'exam_app/css/style.css' %}" media="screen" title="notitle" charset="utf-8">
 </head>
 <body>
-    <a href="/logout/">Logout</a> <a href="/add_trip/">Add a Trip</a> <a href="/trips">Your Trips</a>
+    {{request.session.first_name}}<a href="/logout/"><small>(Logout)</small></a> <a href="/trips">View Your Trips</a> <a href="/add_trip/">Add A New Trip</a>
+    <br>
     <h2>{{trip.destination}}</h2>
+    
+    
+    <a href="/trips/"><small>Go back to the dashboard to add this trip</small></a>
+    
+    
+   
+    <br>
+    <br>
     <br>
     {% for participant in users_going_on_trip %}
-    {% if participant.id != request.session.user_id %}
-    <td><a href="/add_this_trip/{{trips.id}}/">Add This Trip</a></td>
+    {% if participant.id == trip.trip_creator_id %}
+    <p><strong>Planned by:</strong> {{participant.first_name}} {{participant.last_name}}</p>
+    <p><strong>Main Itinerary Goal:</strong> {{trip.itinerary_goal}}</p>
+    <p><strong>Travel Start Date:</strong> {{trip.start_date}}</p>
+    <p><strong>Travel End Date:</strong> {{trip.end_date}}</p>
     {% endif %}
     {% endfor %}
     <br>
+    <br>
+
+    <br>
+    <br>
     <h3>Users who are going to {{trip.destination}}:</h3>
-    <br><br>
-    
+  
 
     {% if users_going_on_trip %}
-        <table>
+        
             {% for participant in users_going_on_trip %}
-                <tr>
+                
                     {% if participant.id == request.session.user_id %}
-                        <td>You{% if trip.trip_creator_id == request.session.user_id %}<a href="/delete_trip/{{trip.id}}/"><sub><sup>Delete This Trip</sup></sub></a>{% endif %}{% if participant.id == request.session.user_id %}<a href="/delete_trip/{{trip.id}}/"><sub><sup>Delete This Trip</sup></sub></a>{% endif %}</td>
+                        <p>You{% if trip.trip_creator_id == request.session.user_id %}<a href="/delete_trip/{{trip.id}}/"><sub><sup>Delete This Trip</sup></sub></a>{% elif participant.id == request.session.user_id %}<a href="/delete_trip/{{trip.id}}/"><sub><sup>Delete This Trip</sup></sub></a>{% endif %}</p>
                     {% endif %}
                    
-                </tr>
-                <tr>
+                
                     
                     {% if trip.trip_creator_id != request.session.user_id %}
                         <br>
-                        <td>{{participant.first_name }} {{participant.last_name}}</td>
+                        <p>{{participant.first_name }} {{participant.last_name}}</p>
                     {% endif %}
-                </tr>
+                
             {% endfor %}
     
-        </table>
+        
     {% endif %}
 
       

@@ -36,7 +36,6 @@ def success(request):
     else:
         context = {'user': User.objects.filter(id=request.session['user_id']),
         'trips': (Trip.objects.filter(Q(trip_creator_id=request.session['user_id']) | Q(users=request.session['user_id'])).distinct().order_by('start_date')),
-        #other_trips is set to the data stored in the Trip table where the logged in user is not the creator or a participant. Ordered by start_date
         'other_trips': (Trip.objects.exclude(Q(trip_creator_id=request.session['user_id']) | Q(users=request.session['user_id'])).distinct().order_by('start_date')),
     }
         return render(request, 'exam_app/travel_dashboard.html', context)
@@ -66,18 +65,14 @@ def logout(request):
 def add_trip(request):
     print request.method
     context = {
-        #trips is set to the data stored in the Trip table where the logged in user is either the creator or a participant. Ordered by start_date
         'trips': (Trip.objects.filter(Q(trip_creator_id=request.session['user_id']) | Q(users=request.session['user_id'])).distinct().order_by('start_date')),
-        #other_trips is set to the data stored in the Trip table where the logged in user is not the creator or a participant. Ordered by start_date
         'other_trips': (Trip.objects.exclude(Q(trip_creator_id=request.session['user_id']) | Q(users=request.session['user_id'])).distinct().order_by('start_date')),
     }
     return render(request, 'exam_app/add_trip.html', context)
 
 def add_to_trips_list(request):
     print request.session['user_id']
-    # context = {'user': User.objects.filter(id=request.session['user_id'])}
     errors = Trip.objects.trip_validator(request.POST)
-    # if request.method == 'POST':
     if errors:
         for tag, error in errors.iteritems():
             messages.error(request, error, extra_tags=tag)
