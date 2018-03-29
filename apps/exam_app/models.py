@@ -72,13 +72,13 @@ class TripManager(models.Manager):
         errors = {}
         if len(postData['start_date']) < 1:
             errors['start_date'] = 'Your trip needs a start date.'
-            if len(postData['end_date']) < 1:
-                errors['end_date'] = 'Your trip needs an end date. When you make millions you can have open-ended vacations.. Just not yet.'
-                if todays_date > postData['start_date']:
-                    errors['trip'] = 'Please input a valid start date. The start date can\'t be in the past.'
-                if datetime.strptime(str(date.today()), '%Y-%m-%d').strftime('%m/%d/%Y') > postData['end_date']:
-                    errors['trip'] = 'Please input a valid end date. No time travel here...'
-                if postData['start_date'] > postData['end_date']:
+        if len(postData['end_date']) < 1:
+            errors['end_date'] = 'Your trip needs an end date. When you make millions you can have open-ended vacations.. Just not yet.'
+        if todays_date > postData['start_date']:
+            errors['trip'] = 'Please input a valid start date. The start date can\'t be in the past.'
+        if datetime.strptime(str(date.today()), '%Y-%m-%d').strftime('%m/%d/%Y') > postData['end_date']:
+            errors['trip'] = 'Please input a valid end date. No time travel here...'
+        if postData['start_date'] > postData['end_date']:
                     errors['trip'] = 'No time travel here... your trip end date needs to be after your trip start date.'
         
         if len(postData['destination']) <  1:
